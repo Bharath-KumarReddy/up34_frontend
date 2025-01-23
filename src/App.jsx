@@ -9,6 +9,7 @@ function App() {
     number: '',
   });
   const [responseMessage, setResponseMessage] = useState('');
+  const [users, setUsers] = useState([]);
 
   const handleChange = (e) => {
     setFormData({
@@ -29,8 +30,22 @@ function App() {
     }
   };
 
+  const handleusers = async (req,res) => {
+
+     try {
+      
+      const res = await axios.get('https://up34-backend.onrender.com/api/users');
+      // console.log(res.data.users);
+      setUsers(res.data.users);
+     } catch (error) {
+      console.log(error);
+     }
+  }
+
+  console.log(users)
+
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-gray-800">User Form</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -76,6 +91,23 @@ function App() {
         </form>
         {responseMessage && <p className="mt-4 text-green-500">{responseMessage}</p>}
       </div>
+      <button type="submit" onClick={handleusers} className=" w-[32%] px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-5">
+            Get Users
+      </button>
+      
+      {users.length > 0 && (
+        <div className='w-[38%]  mt-5 text-white flex flex-col items-start justify-start border-4 border-green-500 text-bold p-2'>
+        {users.map((user) => (
+          <div key={user._id}>
+            <div className='flex gap-10 border-2 border-slate-300 mb-2 overflow-auto'>
+              <p>{user.name}</p>
+              <p>{user.email}</p>
+
+            </div>
+          </div>
+        ))}
+      </div>
+      )}
     </div>
   );
 }
